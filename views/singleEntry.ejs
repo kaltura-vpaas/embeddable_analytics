@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <title>Analytics Loader</title>
+  <link rel="stylesheet" href="stylesheets/kaltura-theme.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+
+<body>
+  <h1>This is an external app loading Analytics in an iframe</h1>
+
+  <iframe id="analytics" src="https://kmc.kaltura.com/apps/kmc-analytics/v1.12.0/index.html"></iframe>
+  <script>
+    var config = {
+      kalturaServer: {
+        uri: 'www.kaltura.com',
+        previewUIConf: <%=process.env.KALTURA_UICONF_ID %>
+      },
+      cdnServers: {
+        serverUri: 'http://cdnapi.kaltura.com',
+        securedServerUri: 'https://cdnapisec.kaltura.com'
+      },
+      ks: "<%=ks%>",
+      pid: <%=process.env.KALTURA_PARTNER_ID %>,
+      locale: 'en',
+      menuConfig: {
+        showMenu: false
+      },
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      var analyticsApp = document.getElementById('analytics');
+
+      var sendMessage = message => {
+        if (analyticsApp && analyticsApp.contentWindow && analyticsApp.contentWindow.postMessage) {
+          analyticsApp.contentWindow.postMessage(message, '*'); // use window.location.origin in your app instead
+        }
+      };
+
+      //listen for events from analytics API
+      window.addEventListener('message', e => {
+        if (!e.data) {
+          return;
+        }
+
+        var postMessageData = e.data;
+        switch (postMessageData.messageType) {
+          case 'analyticsInit':
+            var menusConfig = postMessageData.payload.menuConfig;
+            var viewsConfig = postMessageData.payload.viewsConfig;
+            sendMessage({ messageType: 'init', payload: { ...config, viewsConfig } })
+            break;
+
+          case 'navigateBack':
+          case 'analyticsInitComplete':
+            
+            /*
+            * The following views are available for detailed analytics for specific content ids:
+            * /entry/<entryId>
+            * /entryLive/<id>
+            * /playlist/<playlistId>
+            * /user/<userId>
+            */
+
+            sendMessage({ messageType: 'navigate', payload: { url: '/entry/1_zuv81cf9' } });
+            sendMessage({ messageType: 'updateFilters', payload: { queryParams: { dateBy: 'last30days' } } });
+            break;
+
+          case 'updateLayout':
+            analyticsApp.style.height = `${postMessageData.payload.height}px`;
+            break;
+
+          case 'navigateTo':
+            var [url, params] = postMessageData.payload.split('?');
+            var queryParams = params.split('&').reduce((acc, val) => {
+              var [key, value] = val.split('=');
+              acc[key] = value;
+              return acc;
+            }, {});
+
+            sendMessage({ 'messageType': 'navigate', payload: { url, queryParams } });
+            sendMessage({ 'messageType': 'updateFilters', payload: { queryParams } });
+            break;
+
+          default:
+            console.log(`${postMessageData.messageType} event is not implemented`);
+            break;
+        }
+      })
+    });
+  </script>
+</body>
+
+</html>
