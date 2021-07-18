@@ -54,9 +54,9 @@
             sendMessage({ messageType: 'init', payload: { ...config, viewsConfig } })
             break;
 
-          case 'navigateBack':
+
           case 'analyticsInitComplete':
-            
+
             /*
             * The following views are available for detailed analytics for specific content ids:
             * /entry/<entryId>
@@ -64,9 +64,13 @@
             * /playlist/<playlistId>
             * /user/<userId>
             */
-
             sendMessage({ messageType: 'navigate', payload: { url: '/entry/<%=process.env.ENTRY_ID%>' } });
             sendMessage({ messageType: 'updateFilters', payload: { queryParams: { dateBy: 'last30days' } } });
+            break;
+
+          case 'navigateBack':
+            //handle this as needed in your deployment
+            window.location="/";
             break;
 
           case 'updateLayout':
@@ -80,6 +84,9 @@
               acc[key] = value;
               return acc;
             }, {});
+          case 'entryNavigateBack':
+            console.log("ENB");
+            break;
 
             sendMessage({ 'messageType': 'navigate', payload: { url, queryParams } });
             sendMessage({ 'messageType': 'updateFilters', payload: { queryParams } });
