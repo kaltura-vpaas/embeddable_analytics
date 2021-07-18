@@ -5,7 +5,6 @@ const path = require('path');
 const kaltura = require('kaltura-client');
 var KalturaClientFactory = require('../lib/kalturaClientFactory');
 
-
 /* GET home page. */
 router.get('/', async function (req, res, next) {
   try {

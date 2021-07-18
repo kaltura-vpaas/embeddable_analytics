@@ -11,9 +11,7 @@ All the necessary components, and some nice-to-haves to get a node.js app runnin
 
 Kaltura has a rich and comprehensive [Analytics API](https://developer.kaltura.com/api-docs/Video-Analytics-and-Insights/media-analytics.html) that you can use to generate your own reports and analyses. You can also implement Kaltura's ready made Analytics javascript widget which provides some of the most frequently requested insights. 
 
-![analytics_screen](/Users/hunterp/Documents/GitHub/analytics/readme_assets/analytics_screen.png)
-
-
+![analytics_screen](readme_assets/analytics_screen.png)
 
 
 

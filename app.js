@@ -1,11 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
 
-if(!fs.existsSync("./.env")) {
-  console.log(".env file not found. Quitting");
-  process.exit(1);
-}
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
