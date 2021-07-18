@@ -21,13 +21,24 @@ For a comprehensive list of all methods and variables that are customizable with
 # How to Run
 
 1. Install [node.js](https://nodejs.org/en/)
+
 2. Copy [env.template](https://github.com/kaltura-vpaas/embeddable_analytics/blob/main/env.template) to .env and fill in your information
+
 3. run npm install
+
 4. npm run dev for developement
+
 5. npm start for production
-6. 
+
+   
 
 # Documentation
+
+While this example is built in node.js, 99% of the code is in html/javascript and can be easily ported to any language of your choice. Be sure to pay careful attention to the `privileges` field supplied to the kaltura session in [routes/index.js](routes/index.js)
+
+```javascript
+ var privileges = 'appid:'+appName+'-'+appDomain+',setrole:KMC_ANALYTICS_ROLE';
+```
 
 ## Minimal Example:
 
