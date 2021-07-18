@@ -65,7 +65,7 @@
             * /user/<userId>
             */
 
-            sendMessage({ messageType: 'navigate', payload: { url: '/entry/1_zuv81cf9' } });
+            sendMessage({ messageType: 'navigate', payload: { url: '/entry/<%=process.env.ENTRY_ID%>' } });
             sendMessage({ messageType: 'updateFilters', payload: { queryParams: { dateBy: 'last30days' } } });
             break;
 
