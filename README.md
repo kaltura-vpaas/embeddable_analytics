@@ -1,12 +1,10 @@
-# Kaltura Node-JS Template
+# Kaltura Embeddable Analytics Examples
 
-All the necessary components, and some nice-to-haves to get a node.js app running with the Kaltura API.
+An embeddable javascript widget for Kaltura analytics
 
 # Live Demo:
 
 https://kaltura-embeddable-analytics.herokuapp.com/
-
-
 
 # Intro
 
@@ -27,8 +25,7 @@ For a comprehensive list of all methods and variables that are customizable with
 3. run npm install
 4. npm run dev for developement
 5. npm start for production
-
-
+6. 
 
 # Documentation
 
@@ -117,10 +114,71 @@ Here is the full list of view urls that are available, these map exactly to the 
 
 ## Customize The UI
 
-| [Live Demo](https://kaltura-embeddable-analytics.herokuapp.com/singleView.ejs) | [Source Code](https://github.com/kaltura-vpaas/embeddable_analytics/blob/main/views/singleView.ejs) |
+| [Live Demo](https://kaltura-embeddable-analytics.herokuapp.com/selective.ejs) | [Source Code](https://github.com/kaltura-vpaas/embeddable_analytics/blob/main/views/selective.ejs) |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
 
-## viewConfig Object
+More control over the UI is also available over nearly any element in the widget. Simply set a value from the  [viewsConfig](https://github.com/kaltura-vpaas/embeddable_analytics/blob/main/views/singleView.ejs#L52) to null and it will not be displayed. The full viewsConfig is listed [below](#viewsConfig-Object)
+
+The view for this example will be `/audience/engagement`
+
+```javascript
+sendMessage({ messageType: 'navigate', payload: { url: '/audience/engagement' } });
+```
+
+And if you refer to the `engagement	` key of `audience` in the `viewsConfig` object:
+
+```json
+    "audience": {
+        "engagement": {
+            "export": {},
+            "refineFilter": {
+                "mediaType": {},
+                "entrySource": {},
+                "tags": {},
+                "owners": {},
+                "categories": {},
+                "geo": {}
+            },
+            "miniHighlights": {},
+            "miniTopVideos": {},
+            "miniPeakDay": {},
+            "topVideos": {},
+            "highlights": {},
+            "impressions": {},
+            "syndication": {}
+        },
+```
+
+You will see a complete list of all the elements to be displayed. The goal is to only show the `syndication` element, which is displayed as Top Domains in the widget. All of the views except for `syndication` are set to null and therefore they will be hidden:
+
+```javascript
+				case 'analyticsInit':
+            var menusConfig = postMessageData.payload.menuConfig;
+            var viewsConfig = postMessageData.payload.viewsConfig;
+          
+            viewsConfig.audience.engagement.miniHighlights = null;
+            viewsConfig.audience.engagement.miniTopVideos = null;
+            viewsConfig.audience.engagement.impressions = null;
+            viewsConfig.audience.engagement.highlights = null;
+            viewsConfig.audience.engagement.topVideos = null;
+            viewsConfig.audience.engagement.miniPeakDay = null;
+            viewsConfig.audience.engagement.export = null;
+
+            sendMessage({ messageType: 'init', payload: { ...config, viewsConfig } })
+```
+
+Using this pattern, you can customize the elements of the widget to achieve a custom view with only the elements you want.
+
+## Everything combined
+
+| [Live Demo](https://kaltura-embeddable-analytics.herokuapp.com/indexCustom.ejs) | [Source Code](https://github.com/kaltura-vpaas/embeddable_analytics/blob/main/views/indexCustom.ejs) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+
+This example shows how to programmatically build a menu dynamically from the viewsConfig object, and may serve as inspiration for building your own menu system. 
+
+## viewsConfig Object
+
+The [viewsConfig](https://github.com/kaltura-vpaas/embeddable_analytics/blob/main/views/singleView.ejs#L52) object contains a master list of all the elements the widget will display. It can be found by inspecting via javascript debugger and is customizable as shown in the examples above. Here is printout of the object:
 
 ```json
 [
